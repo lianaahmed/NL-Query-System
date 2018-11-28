@@ -1,4 +1,4 @@
-# File: statements.py
+                                                                                                                                                                                # File: statements.py
 # Template file for Informatics 2A Assignment 2:
 # 'A Natural Language Query System in Python/NLTK'
 
@@ -16,11 +16,103 @@ def add(lst,item):
 
 class Lexicon:
     """stores known word stems of various part-of-speech categories"""
-    # add code here
+    
+    #Lists of POS categories which will store the appropriate word stem
+    def __init__(self):
+        # Proper names
+        self.P = []
+        # Common nouns
+        self.N = []
+        # Adjectivs
+        self.A = []
+        # Intransitive Verbs
+        self.I = []
+        # Transitive Verbs
+        self.T = []
+
+    # Adds a word into the appropriate POS category
+    def add(self, stem, cat):
+        if(cat == "P"):
+            self.P.append(stem)
+        elif(cat == "N"):
+            self.N.append(stem)
+        elif(cat == "A"):
+            self.A.append(stem)
+        elif(cat == "I"):
+            self.I.append(stem)
+        elif(cat == "T"):
+            self.T.append(stem)
+
+    # Returns all noun word stems in a category w/o duplicates
+    def getAll(self, cat):
+
+        # Sets catList to cat
+        if(cat == "P"):
+            catList = self.P
+        elif(cat == "N"):
+            catList = self.N
+        elif(cat == "A"):
+            catList = self.A
+        elif(cat == "I"):
+            catList = self.I
+        elif(cat == "T"):
+            catList = self.T
+
+        noDupesList = []
+
+        # Loops through each value in the given cat List
+        for stem in catList:
+            # Checks if the word already exists in noDupesList
+            # If it doesn't, it is added to noDupesList
+            if stem not in noDupesList:
+                noDupesList.append(stem)
+        
+        return noDupesList
+        
 
 class FactBase:
     """stores unary and binary relational facts"""
-    # add code here
+    
+    # Creates an empty list to store unary and binary facts
+    def __init__(self):
+        self.facts = []
+
+    # Adds a tuple containing the predicate and the e1 value 
+    #  to the facts list
+    def addUnary(self, pred, e1):
+        self.facts.append((pred, e1))
+
+    # Adds a tuple containing the predicate, the e1 value and 
+    # the e2 value to the facts list
+    def addBinary(self, pred, e1, e2):
+        self.facts.append((pred, e1, e2))
+    
+    # Checks if a unary fact already exists in the facts list
+    # in form of a tuple
+    # Returns true if found
+    def queryUnary(self, pred, e1):
+
+        found = False
+
+        for fact in self.facts:
+            if(fact == (pred, e1)):
+                found = True
+
+        return found
+
+    # Checks if a binary fact already exists in the facts list
+    # in form of a tuple
+    # Returns true if found
+    def queryBinary(self, pred, e1, e2):
+
+        found = False
+
+        for fact in self.facts:
+            if(fact == (pred, e1, e2)):
+                found = True
+
+        return found
+
 
 import re
 from nltk.corpus import brown 

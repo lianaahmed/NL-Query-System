@@ -88,8 +88,9 @@ class FactBase:
         self.facts.append((pred, e1, e2))
     
     # Checks if a unary fact already exists in the facts list
-    # in form of a tuple
+    # in form of a tuple           
     # Returns true if found
+    # False otherwise
     def queryUnary(self, pred, e1):
 
         found = False
@@ -103,6 +104,7 @@ class FactBase:
     # Checks if a binary fact already exists in the facts list
     # in form of a tuple
     # Returns true if found
+    # False otherwise
     def queryBinary(self, pred, e1, e2):
 
         found = False

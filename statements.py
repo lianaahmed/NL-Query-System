@@ -129,20 +129,16 @@ def verb_stem(s):
 
         # If the stem ends in o,x,ch,sh,ss or zz, add es (goes, boxes, attaches, washes,
         # dresses, fizzes).
-        if re.match(r".*[(o)|(x)|(ch)|(sh)|(ss)|(zz)]e", s[:-1]):
+        if re.match(r".*((o)|(x)|(ch)|(sh)|(ss)|(zz))e", s[:-1]):
             return s[:-2]
 
-        # If the stem ends in anything except s,x,y,z,ch,sh or a vowel, simply add s
-        # (eats, tells, shows).
-        elif re.match('.*[^[^aeiousxyz](ch)(sh)]$', s[:-1]):
+        # If the stem ends in se or ze but not in sse or zze, add s (loses, dazes, lapses,
+        # analyses).
+        elif re.match(r".*[^(sse)(zze)](se)|(ze)", s[:-1]):
             return s[:-1]
 
-        # If the stem ends in y preceded by a vowel, simply add s (pays, buys).
-        elif re.match(r".*[aeiou]y", s[:-1]):
-            return s[:-1]
-        
         # If the stem is of the form Xie where X is a single letter other than a vowel,
-        # simply add s (dies, lies, ties — note that this doesn’t account for unties)
+        # simply add s (dies, lies, ties - note that this doesn't account for unties)
 
         elif re.match(r"[bcdfghjklmnpqrstvwxyz]ie", s[:-1]):
             return s[:-1]
@@ -151,15 +147,19 @@ def verb_stem(s):
         # letters, change the y to ies (flies, tries, unifies).
         elif re.match(r".*ie", s[:-1]):
             return s[:-3] + "y"
-        
-        # If the stem ends in se or ze but not in sse or zze, add s (loses, dazes, lapses,
-        # analyses).
-        elif re.match(r".*[^(sse)(zze)](se)|(ze)", s[:-1]):
+
+        # If the stem ends in anything except s,x,y,z,ch,sh or a vowel, simply add s
+        # (eats, tells, shows).
+        elif re.match(r".*[^aeiousxyz(ch)(sh)]", s[:-1]):
+            return s[:-1]
+
+        # If the stem ends in y preceded by a vowel, simply add s (pays, buys).
+        elif re.match(r".*[aeiou]y", s[:-1]):
             return s[:-1]
         
         # If the stem ends in e not preceded by i,o,s,x,z,ch,sh, just add s (likes, hates,
         # bathes).
-        elif re.match(r".*[^[iosxz](ch)(sh)]e", s[:-1]):
+        elif re.match(r".*[^iosxz(ch)(sh)]e", s[:-1]):
             return s[:-1]
             
         else:

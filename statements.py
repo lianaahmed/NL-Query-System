@@ -120,55 +120,74 @@ import re
 from nltk.corpus import brown 
 def verb_stem(s):
     """extracts the stem from the 3sg form of a verb, or returns empty string"""
-    
+  
     # If the stem is have, its 3s form is has.
     if re.match(r"has", s):
         return "have"
-
+    elif re.match(r"is", s):
+        return "are"
+    elif re.match(r"does", s):
+        return "do"
     elif re.match('.*s$', s):
 
         # If the stem ends in o,x,ch,sh,ss or zz, add es (goes, boxes, attaches, washes,
         # dresses, fizzes).
         if re.match(r".*((o)|(x)|(ch)|(sh)|(ss)|(zz))e", s[:-1]):
-            return s[:-2]
+            stem = s[:-2]
 
         # If the stem ends in se or ze but not in sse or zze, add s (loses, dazes, lapses,
         # analyses).
         elif re.match(r".*[^(sse)(zze)](se)|(ze)", s[:-1]):
-            return s[:-1]
+            stem = s[:-1]
 
         # If the stem is of the form Xie where X is a single letter other than a vowel,
         # simply add s (dies, lies, ties - note that this doesn't account for unties)
 
         elif re.match(r"[bcdfghjklmnpqrstvwxyz]ie", s[:-1]):
-            return s[:-1]
+            stem = s[:-1]
 
         # If the stem ends in y preceded by a non-vowel and contains at least three
         # letters, change the y to ies (flies, tries, unifies).
         elif re.match(r".*ie", s[:-1]):
-            return s[:-3] + "y"
+            stem = s[:-3] + "y"
 
         # If the stem ends in anything except s,x,y,z,ch,sh or a vowel, simply add s
         # (eats, tells, shows).
         elif re.match(r".*[^aeiousxyz(ch)(sh)]", s[:-1]):
-            return s[:-1]
+            stem = s[:-1]
 
         # If the stem ends in y preceded by a vowel, simply add s (pays, buys).
         elif re.match(r".*[aeiou]y", s[:-1]):
-            return s[:-1]
+            stem = s[:-1]
         
         # If the stem ends in e not preceded by i,o,s,x,z,ch,sh, just add s (likes, hates,
         # bathes).
         elif re.match(r".*[^iosxz(ch)(sh)]e", s[:-1]):
-            return s[:-1]
+            stem = s[:-1]
             
         else:
             return ""
     
     else:
         return ""
-    
 
+    if(checkVerb(stem) == True):
+        return stem
+    else:
+        return ""
+
+# Helper function for verb_stems to check if the word passed through is a verb
+def checkVerb(s):
+
+    isVerb = False
+
+    # Loops through each word in the corpus and checks if its a verb
+    for (word, tag) in brown.tagged_words():
+        if word == s and (tag == 'VB' or tag == 'VBZ'):
+            isVerb = True
+    
+    return isVerb
+    
 
 def add_proper_name (w,lx):
     """adds a name to a lexicon, checking if first letter is uppercase"""

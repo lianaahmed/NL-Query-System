@@ -85,13 +85,28 @@ def top_level_rule(tr):
             rule = rule + ' ' + label(t)
         return rule
         
+
 def N_phrase_num(tr):
     """returns the number attribute of a noun-like tree, based on its head noun"""
     if (tr.label() == 'N'):
         return tr[0][1]  # the s or p from Ns or Np
     elif (tr.label() == 'Nom'):
         return N_phrase_num(tr[0])
-    elif  # add code here
+    elif (tr.label() == 'P'):
+        return "s"
+    elif (tr.label() == 'NP'):
+        if (tr.label() == 'AR'):
+            return N_phrase_num(tr[1])
+        else:
+			return N_phrase_num(tr[0])
+    elif (tr.label() == 'AN'):
+        if (tr[0].label() == 'N'):
+            return N_phrase_num(tr[0])
+        else:
+            return N_phrase_num(tr[1])
+    else:
+        return ""
+
 
 def V_phrase_num(tr):
     """returns the number attribute of a verb-like tree, based on its head verb,
@@ -100,7 +115,17 @@ def V_phrase_num(tr):
         return tr[0][1]  # the s or p from Is,Ts or Ip,Tp
     elif (tr.label() == 'VP'):
         return V_phrase_num(tr[0])
-    elif  # add code here
+    elif tr.label() == 'BE' or tr.label() == 'DO':
+        return tr[0][2]
+    elif tr.label() == 'VP':
+        return V_phrase_num(tr[0])
+    elif tr.label() == 'Rel' and tr[1].label() == 'VP':
+        return V_phrase_num(tr[1])
+    elif tr.label() == 'QP' and tr[0].label() == 'VP':
+        return V_phrase_num(tr[0])
+    else:
+        return ''
+
 
 def matches(n1,n2):
     return (n1==n2 or n1=='' or n2=='')
@@ -112,7 +137,26 @@ def check_node(tr):
         return (matches (N_phrase_num(tr[1]), V_phrase_num(tr[2])))
     elif (rule == 'NP -> AR Nom'):
         return (N_phrase_num(tr[1]) == 's')
-    elif  # add code here
+    elif (rule == 'QP -> DO NP T'):
+        s1 = matches(V_phrase_num(tr[0]), N_phrase_num(tr[1]))
+        s2 = V_phrase_num(tr[2]) == 'p'
+        return s1 and s2
+    elif (rule == 'VP -> BE NP'):
+        return matches(V_phrase_num(tr[0]), N_phrase_num(tr[1]))
+    elif (rule == 'VP -> VP AND VP'):
+        return matches(V_phrase_num(tr[0]), V_phrase_num(tr[2]))
+    elif (rule == 'NP -> Nom'):
+        return N_phrase_num(tr[0]) == 'p'
+    elif (rule == 'NP -> AR Nom'):
+        return N_phrase_num(tr[1]) == 's'
+    elif rule == 'Rel -> NP T':
+        return matches(N_phrase_num(tr[0]), V_phrase_num(tr[1]))
+    elif rule == "Nom -> AN Rel":
+        return matches(N_phrase_num(tr[0]), V_phrase_num(tr[1]))
+    else:
+        return True
+
+    
 
 def check_all_nodes(tr):
     """checks agreement constraints everywhere in tr"""

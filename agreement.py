@@ -149,9 +149,9 @@ def check_node(tr):
         return N_phrase_num(tr[0]) == 'p'
     elif (rule == 'NP -> AR Nom'):
         return N_phrase_num(tr[1]) == 's'
-    elif rule == 'Rel -> NP T':
+    elif (rule == 'Rel -> NP T'):
         return matches(N_phrase_num(tr[0]), V_phrase_num(tr[1]))
-    elif rule == "Nom -> AN Rel":
+    elif (rule == 'Nom -> AN Rel'):
         return matches(N_phrase_num(tr[0]), V_phrase_num(tr[1]))
     else:
         return True
